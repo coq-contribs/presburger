@@ -1,0 +1,8 @@
+Name:Presburger
+Title: Presburger's algorithm
+Author:Laurent Thery
+Institution:INRIA
+Date:March 2002
+Description: A formalization of Presburger's algorithm as stated in
+the inital paper by Presburger.
+Keywords: Integer Arithmetic, Decision Procedure, Presburger

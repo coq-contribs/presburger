@@ -1,0 +1,20 @@
+Cong.v
+Elim.v
+Factor.v
+Form.v
+GroundN.v
+Lift.v
+Nat.v
+Normal.v
+Option.v
+Process.v
+ReduceCong.v
+ReduceEq.v
+Sort.v
+Zdivides.v
+prestac.ml
+PresTac.v
+PresTac_ex.v
+sTactic.v
+-custom "$(COQC) -q -byte PresTac.v" "" PresTac.vo
+-custom "$(COQC) -q -byte PresTac_ex.v" "" PresTac_ex.vo
