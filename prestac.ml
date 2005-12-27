@@ -193,6 +193,6 @@ let prest_run gl =
                    [| res; Lazy.force coq_o |])
                |])) gl
 
-TACTIC EXTEND PresTac
- [ "PresTac" ] -> [ prest_run ]
+TACTIC EXTEND prestac
+ [ "prestac" ] -> [ prest_run ]
 END
