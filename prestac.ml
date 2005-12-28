@@ -63,8 +63,8 @@ let coq_z = lazy (constant "Z");;
 let coq_xo = lazy (constant "xO");;
 let coq_xi = lazy (constant "xI");;
 let coq_xh = lazy (constant "xH");;
-let coq_zero = lazy (constant "ZERO");;
-let coq_pos = lazy (constant "POS");;
+let coq_zero = lazy (constant "Z0");;
+let coq_pos = lazy (constant "Zpos");;
 let coq_zplus = lazy (constant "Zplus");;
 
 
