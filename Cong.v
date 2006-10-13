@@ -115,9 +115,8 @@ intros p H1 (H2, H3); split; auto.
 exists (Zquotient (a - b) (Z_of_nat (S n))).
 apply trans_equal with (b + (a - b))%Z.
 ring.
-pattern (a - b)%Z at 1 in |- *; rewrite H1; ring; auto with arith.
-simpl in |- *; auto.
-apply POS_inject.
+pattern (a - b)%Z at 1 in |- *; rewrite H1; ring_simplify;
+  eapply Zplus_eq_compat; [reflexivity | simpl; apply POS_inject].
 case (le_or_lt (S n) (Zabs_nat (Zpos p))); intros H4; auto.
 Contradict H3; simpl in |- *.
 apply Zle_not_lt.

@@ -282,8 +282,7 @@ Qed.
 Theorem divides_minus :
  forall m1 m2 m3, divides m1 m2 -> divides m1 m3 -> divides m1 (m2 - m3).
 intros m1 m2 m3 (m1', H1) (m2', H2); exists (m1' - m2'); rewrite H2;
- rewrite H1; ring.
-rewrite mult_minus_distr_r; auto with arith.
+ rewrite H1. auto with arith.
 Qed.
 Hint Resolve divides_refl divides_add divides_minus.
  
