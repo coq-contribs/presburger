@@ -23,7 +23,7 @@
 Require Import List.
 Require Import Normal.
 Require Import Nat.
-Require Import ZArithRing.
+Require Import ArithRing ZArithRing.
 Require Import sTactic.
 Require Import ReduceEq.
 Require Import ReduceCong.
