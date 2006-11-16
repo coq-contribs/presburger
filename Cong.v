@@ -23,7 +23,6 @@
 (** * Congruence *)
 Require Export ZArith.
 Require Import Zdivides.
-Require Import ZArithRing.
 Require Import sTactic.
 
 (** Useful lemmae *)
