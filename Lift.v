@@ -115,7 +115,7 @@ intros a H; elim H; unfold lift_if1 in |- *; lazy beta in |- *;
   (replace (p + (m + n)) with (max (m + 0) (p + m + n));
     [ apply shiftForm_groundN; auto; replace (p + (m + n)) with (m + (p + n));
        auto with arith
-    | ring_simplify; rewrite plus_comm; auto with arith]); 
+    | ring_simplify; rewrite plus_comm; auto with arith]);
  try (replace (p + m + n) with (m + (n + p)); auto with arith; try ring).
 Qed.
  
