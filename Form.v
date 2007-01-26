@@ -84,9 +84,8 @@ Theorem scal_correct :
 intros i a l; elim i; auto.
 intros n H; apply trans_equal with (exp2Z l a + exp2Z l (scal n a))%Z.
 simpl in |- *; auto.
-case n; try ring.
-intros n1; simpl in |- *; ring.
-rewrite H; rewrite Znat.inj_S; unfold Zsucc in |- *; ring.
+destruct n; simpl; try ring.
+rewrite H; rewrite Znat.inj_S; ring.
 Qed.
 
  

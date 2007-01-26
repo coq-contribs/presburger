@@ -23,7 +23,6 @@
 (** * Congruence *)
 Require Export ZArith.
 Require Import Zdivides.
-Require Import ZArithRing.
 Require Import sTactic.
 
 (** Useful lemmae *)
@@ -164,7 +163,8 @@ Definition congZ_dec :
 intros i a b; case i.
 generalize (Z_eq_bool_correct a b); case (Z_eq_bool a b).
 intros H; left; exists 0%Z; rewrite H; ring.
-intros H; right; red in |- *; intros (x, H0); case H; rewrite H0; ring.
+intros H; right; red in |- *; intros (x, H0); case H; rewrite H0;
+  simpl; ring.
 intros n; case (ZdividesP (a - b) (Z_of_nat (S n))).
 intros H; left; case H; intros x H1.
 exists x; replace a with (b + (a - b))%Z; [ rewrite H1 | idtac ]; ring.
@@ -174,6 +174,6 @@ Defined.
 
 Theorem congZ_O_Eq : forall a b, congZ 0 a b <-> a = b.
 intros a b; split.
-intros (m1, H1); rewrite H1; ring.
+intros (m1, H1); rewrite H1; simpl; ring.
 intros H1; rewrite H1; exists 0%Z; ring.
 Qed.
