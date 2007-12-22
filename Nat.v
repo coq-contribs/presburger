@@ -144,8 +144,6 @@ apply lt_le_trans with m2; auto with arith.
 rewrite H3; auto.
 generalize H1 H4; case m2; simpl in |- *; auto with arith.
 intros n4 H2 H5; apply le_trans with n4; auto with arith.
-generalize n3; elim n4; auto with arith; intros n5 Rec n6; case n6;
- simpl in |- *; auto.
 intros x (y, H2).
 exists (x - y)%Z; exists y; rewrite <- H2; rewrite H3.
 rewrite Znat.inj_minus1; try ring.
@@ -162,9 +160,6 @@ apply gt_S_le; red in |- *.
 apply lt_le_trans with m1; auto with arith.
 rewrite H3; generalize H4; case m1; simpl in |- *; auto with arith.
 intros H2; Contradict H2; auto with arith.
-intros n4 H2; apply le_lt_trans with n4; auto with arith.
-generalize n3; elim n4; auto with arith; intros n5 Rec n6; case n6;
- simpl in |- *; auto.
 apply gt_S_le; red in |- *.
 apply lt_le_trans with m1; auto with arith.
 intros x (y, H2).
