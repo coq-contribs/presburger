@@ -80,24 +80,24 @@ let pres_constant dir s =
 
 (* From Form *)
 
-let coq_AND = lazy (pres_constant ["Form"] "ANd");;
-let coq_OR = lazy (pres_constant ["Form"] "Or");;
-let coq_IMPL = lazy (pres_constant ["Form"] "Impl");;
-let coq_EQ = lazy (pres_constant ["Form"] "Eq");;
-let coq_NEG = lazy (pres_constant ["Form"] "Neg");;
-let coq_FORALL = lazy (pres_constant ["Form"] "Forall");;
-let coq_EXISTS = lazy (pres_constant ["Form"] "Exists");;
-let coq_PLUS = lazy (pres_constant ["Form"] "Plus");;
-let coq_NUM = lazy (pres_constant ["Form"] "Num");;
-let coq_VAR = lazy (pres_constant ["Form"] "Var");;
+let coq_AND = lazy (pres_constant ["Form"; "Presburger"] "ANd");;
+let coq_OR = lazy (pres_constant ["Form"; "Presburger"] "Or");;
+let coq_IMPL = lazy (pres_constant ["Form"; "Presburger"] "Impl");;
+let coq_EQ = lazy (pres_constant ["Form"; "Presburger"] "Eq");;
+let coq_NEG = lazy (pres_constant ["Form"; "Presburger"] "Neg");;
+let coq_FORALL = lazy (pres_constant ["Form"; "Presburger"] "Forall");;
+let coq_EXISTS = lazy (pres_constant ["Form"; "Presburger"] "Exists");;
+let coq_PLUS = lazy (pres_constant ["Form"; "Presburger"] "Plus");;
+let coq_NUM = lazy (pres_constant ["Form"; "Presburger"] "Num");;
+let coq_VAR = lazy (pres_constant ["Form"; "Presburger"] "Var");;
 
 (* From GroundN *)
 
-let coq_fgrounNForm_correct = lazy (pres_constant ["GroundN"] "fgrounNForm_correct");;
+let coq_fgrounNForm_correct = lazy (pres_constant ["GroundN"; "Presburger"] "fgrounNForm_correct");;
 
 (* From Elim *)
 
-let coq_presburger_correct = lazy (pres_constant ["Elim"] "presburger_correct");;
+let coq_presburger_correct = lazy (pres_constant ["Elim"; "Presburger"] "presburger_correct");;
 
 
 (* Some exception *)

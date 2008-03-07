@@ -1,3 +1,4 @@
+-R . Presburger
 Cong.v
 Elim.v
 Factor.v
@@ -16,5 +17,5 @@ prestac.ml
 PresTac.v
 PresTac_ex.v
 sTactic.v
--custom "$(COQC) -q -byte PresTac.v" "" PresTac.vo
--custom "$(COQC) -q -byte PresTac_ex.v" "" PresTac_ex.vo
+-custom "$(COQC) $(COQLIBS) -q -byte PresTac.v" "" PresTac.vo
+-custom "$(COQC) $(COQLIBS) -q -byte PresTac_ex.v" "" PresTac_ex.vo
