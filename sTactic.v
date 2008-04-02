@@ -26,22 +26,28 @@ Theorem Contradict1 : forall a b : Prop, b -> (a -> ~ b) -> ~ a.
 intuition.
 Qed.
 
+Theorem Contradict1' : forall a b : Prop, ~ b -> (a -> b) -> ~ a.
+intuition.
+Qed.
+
 Theorem Contradict2 : forall a b : Prop, b -> ~ b -> a.
 intuition.
 Qed.
 
-Theorem Contradict3 : forall a : Prop, a -> ~ ~ a.
-auto.
+Theorem Contradict2' : forall a b : Prop, ~ b -> b -> a.
+intuition.
 Qed.
+
 (** Contradict is used to contradict an hypothesis H
   -if we have H:~A |- B the result is |- A
   -if we have H:~A |- ~B the result is H:B |- A
 *)
 
 Ltac Contradict name :=
+  (apply (fun a : Prop => Contradict1' a _ name); clear name; intros name) ||
   (apply (fun a : Prop => Contradict1 a _ name); clear name; intros name) ||
-    (apply (fun a : Prop => Contradict2 a _ name); clear name);
-   try apply Contradict3.
+  (apply (fun a : Prop => Contradict2' a _ name); clear name) ||
+  (apply (fun a : Prop => Contradict2 a _ name); clear name).
 
 (** Same as Case but keeps an equality *)
 
