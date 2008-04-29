@@ -38,10 +38,10 @@ CAMLP4:=$(notdir $(CAMLP4LIB))
 COQSRC:=-I $(COQTOP)/kernel -I $(COQTOP)/lib \
   -I $(COQTOP)/library -I $(COQTOP)/parsing \
   -I $(COQTOP)/pretyping -I $(COQTOP)/interp \
-  -I $(COQTOP)/proofs -I $(COQTOP)/syntax -I $(COQTOP)/tactics \
+  -I $(COQTOP)/proofs -I $(COQTOP)/tactics \
   -I $(COQTOP)/toplevel -I $(COQTOP)/contrib/correctness \
   -I $(COQTOP)/contrib/extraction -I $(COQTOP)/contrib/field \
-  -I $(COQTOP)/contrib/fourier -I $(COQTOP)/contrib/graphs \
+  -I $(COQTOP)/contrib/fourier \
   -I $(COQTOP)/contrib/interface -I $(COQTOP)/contrib/jprover \
   -I $(COQTOP)/contrib/omega -I $(COQTOP)/contrib/romega \
   -I $(COQTOP)/contrib/ring -I $(COQTOP)/contrib/xml \
@@ -54,7 +54,7 @@ COQDEP:=$(COQBIN)coqdep -c
 GALLINA:=$(COQBIN)gallina
 COQDOC:=$(COQBIN)coqdoc
 CAMLC:=$(CAMLBIN)ocamlc -rectypes -c
-CAMLOPTC:=$(CAMLBIN)ocamlopt -c
+CAMLOPTC:=$(CAMLBIN)ocamlopt -rectypes -c
 CAMLLINK:=$(CAMLBIN)ocamlc
 CAMLOPTLINK:=$(CAMLBIN)ocamlopt
 GRAMMARS:=grammar.cma
@@ -81,8 +81,6 @@ VFILES:=Cong.v\
   ReduceEq.v\
   Sort.v\
   Zdivides.v\
-  PresTac.v\
-  PresTac_ex.v\
   sTactic.v
 VOFILES:=$(VFILES:.v=.vo)
 GLOBFILES:=$(VFILES:.v=.glob)
@@ -90,28 +88,11 @@ VIFILES:=$(VFILES:.v=.vi)
 GFILES:=$(VFILES:.v=.g)
 HTMLFILES:=$(VFILES:.v=.html)
 GHTMLFILES:=$(VFILES:.v=.g.html)
+MLFILES:=prestac.ml
+CMOFILES:=$(MLFILES:.ml=.cmo)
 
-all: Cong.vo\
-  Elim.vo\
-  Factor.vo\
-  Form.vo\
-  GroundN.vo\
-  Lift.vo\
-  Nat.vo\
-  Normal.vo\
-  Option.vo\
-  Process.vo\
-  ReduceCong.vo\
-  ReduceEq.vo\
-  Sort.vo\
-  Zdivides.vo\
-  prestac.cmo\
-  PresTac.vo\
-  PresTac_ex.vo\
-  sTactic.vo\
-  PresTac.vo\
+all: $(VOFILES) $(CMOFILES) PresTac.vo\
   PresTac_ex.vo
-
 spec: $(VIFILES)
 
 gallina: $(GFILES)
@@ -138,10 +119,10 @@ all-gal.ps: $(VFILES)
 #                 #
 ###################
 
-PresTac.vo: 
+PresTac.vo: prestac.cmo
 	$(COQC) $(COQLIBS) -q -byte PresTac.v
 
-PresTac_ex.vo: 
+PresTac_ex.vo: PresTac.vo
 	$(COQC) $(COQLIBS) -q -byte PresTac_ex.v
 
 ####################
@@ -152,8 +133,6 @@ PresTac_ex.vo:
 
 .PHONY: all opt byte archclean clean install depend html
 
-.SUFFIXES: .mli .ml .cmo .cmi .cmx .v .vo .vi .g .html .tex .g.tex .g.html
-
 %.cmi: %.mli
 	$(CAMLC) $(ZDEBUG) $(ZFLAGS) $<
 
@@ -162,6 +141,9 @@ PresTac_ex.vo:
 
 %.cmx: %.ml
 	$(CAMLOPTC) $(ZDEBUG) $(ZFLAGS) $(PP) $<
+
+%.ml.d: %.ml
+	$(CAMLBIN)ocamldep -slash $(ZFLAGS) $(PP) "$<" > "$@"
 
 %.vo %.glob: %.v
 	$(COQC) -dump-glob $*.glob $(COQDEBUG) $(COQFLAGS) $*
@@ -184,13 +166,8 @@ PresTac_ex.vo:
 %.g.html: %.v %.glob
 	$(COQDOC) -glob-from $*.glob -html -g $< -o $@
 
-%.v.d.raw: %.v
-	$(COQDEP) -slash $(COQLIBS) "$<" > "$@"\
-	  || ( RV=$$?; rm -f "$@"; exit $${RV} )
-
-%.v.d: %.v.d.raw
-	$(HIDE)sed 's/\(.*\)\.vo[[:space:]]*:/\1.vo \1.glob:/' < "$<" > "$@" \
-	  || ( RV=$$?; rm -f "$@"; exit $${RV} )
+%.v.d: %.v
+	$(COQDEP) -glob -slash $(COQLIBS) "$<" > "$@" || ( RV=$$?; rm -f "$@"; exit $${RV} )
 
 byte:
 	$(MAKE) all "OPT:=-byte"
@@ -211,6 +188,7 @@ Makefile: Make
 clean:
 	rm -f *.cmo *.cmi *.cmx *.o $(VOFILES) $(VIFILES) $(GFILES) *~
 	rm -f all.ps all-gal.ps all.glob $(VFILES:.v=.glob) $(HTMLFILES) $(GHTMLFILES) $(VFILES:.v=.tex) $(VFILES:.v=.g.tex) $(VFILES:.v=.v.d)
+	rm -f $(CMOFILES) $(MLFILES:.ml=.ml.d)
 	- rm -rf html
 	- rm -f PresTac.vo
 	- rm -f PresTac_ex.vo
@@ -221,6 +199,9 @@ archclean:
 
 -include $(VFILES:.v=.v.d)
 .SECONDARY: $(VFILES:.v=.v.d)
+
+-include $(MLFILES:.ml=.ml.d)
+.SECONDARY: $(MLFILES:.ml=.ml.d)
 
 # WARNING
 #
