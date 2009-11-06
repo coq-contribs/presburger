@@ -34,27 +34,30 @@ open Constrintern;;
   the constants are loaded in the environment
 *)
 
+let init_constant = Coqlib.gen_constant_in_modules "PresTac"
+  Coqlib.init_modules
+
 let constant = Coqlib.gen_constant_in_modules "PresTac"
   (Coqlib.init_modules @ Coqlib.zarith_base_modules)
 
 (* From logic *)
 
-let coq_ex = lazy (constant "ex");;
-let coq_eq = lazy (constant "eq");;
-let coq_and = lazy (constant "and");;
-let coq_or = lazy (constant "or");;
-let coq_not = lazy (constant "not");;
-let coq_True = lazy (constant "True");;
-let coq_False = lazy (constant "False");;
-let coq_iff = lazy (constant "iff");;
-let coq_I = lazy (constant "I");;
+let coq_ex = lazy (init_constant "ex");;
+let coq_eq = lazy (init_constant "eq");;
+let coq_and = lazy (init_constant "and");;
+let coq_or = lazy (init_constant "or");;
+let coq_not = lazy (init_constant "not");;
+let coq_True = lazy (init_constant "True");;
+let coq_False = lazy (init_constant "False");;
+let coq_iff = lazy (init_constant "iff");;
+let coq_I = lazy (init_constant "I");;
 
 
 (* From datatype *)
 
-let coq_prod = lazy (constant "prod");;
-let coq_s = lazy (constant "S");;
-let coq_o = lazy (constant "O");;
+let coq_prod = lazy (init_constant "prod");;
+let coq_s = lazy (init_constant "S");;
+let coq_o = lazy (init_constant "O");;
 
 
 (* From ZArith *)
