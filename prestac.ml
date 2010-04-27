@@ -13,7 +13,6 @@ open Names;;
 open Reduction;;
 open Tacmach;;
 open Proof_type;;
-open Proof_trees;;
 open Printer;;
 open Equality;;
 open Vernacinterp;;
