@@ -21,9 +21,9 @@
 (*    Laurent.Thery @sophia.inria.fr        March 2002                  *)
 (************************************************************************)
 (** Extra properties over Z *)
-Require Import Omega.
 Require Import Arith.
 Require Import Compare.
+Require Import Omega.
 Require Import Zpower.
 Require Import Zcomplements.
 Require Import Reals.
@@ -283,8 +283,8 @@ intros p'; simpl in |- *; case (Pdiv p' q); simpl in |- *;
 unfold nat_of_P in |- *; simpl in |- *.
 rewrite ZL6; rewrite H1.
 case q1; case r1; simpl in |- *.
-intros r2 q2; CaseEq ((xI r2 ?= q)%positive Datatypes.Eq); simpl in |- *;
- auto.
+intros r2 q2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xI r2) q Datatypes.Eq); simpl in |- *; auto.
 intros H3; rewrite <- (Pcompare_Eq_eq _ _ H3); simpl in |- *;
  unfold nat_of_P in |- *; simpl in |- *.
 apply f_equal with (f := S); repeat rewrite (fun x y => mult_comm x (S y));
@@ -300,7 +300,8 @@ apply
  [ rewrite <- nat_of_P_plus_morphism; rewrite H5; simpl in |- *;
     repeat rewrite ZL6; unfold nat_of_P in |- *; apply f_equal with (f := S)
  | unfold nat_of_P in |- * ]; ring.
-intros r2; CaseEq ((1 ?= q)%positive Datatypes.Eq); simpl in |- *; auto.
+intros r2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare 1 q Datatypes.Eq); simpl in |- *; auto.
 intros H3; rewrite <- (Pcompare_Eq_eq _ _ H3); simpl in |- *;
  unfold nat_of_P in |- *; simpl in |- *; repeat rewrite ZL6;
  apply f_equal with (f := S); unfold nat_of_P; ring.
@@ -314,7 +315,8 @@ intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
  [ rewrite <- nat_of_P_plus_morphism; rewrite H5; simpl in |- *;
     repeat rewrite ZL6; unfold nat_of_P in |- *; apply f_equal with (f := S)
  | unfold nat_of_P in |- * ]; ring.
-intros r2; CaseEq ((xI r2 ?= q)%positive Datatypes.Eq); simpl in |- *; auto.
+intros r2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xI r2) q Datatypes.Eq); simpl in |- *; auto.
 intros H3; rewrite <- (Pcompare_Eq_eq _ _ H3); simpl in |- *;
  unfold nat_of_P in |- *; simpl in |- *; repeat rewrite ZL6;
  unfold nat_of_P in |- *; apply f_equal with (f := S); 
@@ -331,8 +333,8 @@ intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
  | unfold nat_of_P in |- * ]; ring.
 case q; simpl in |- *; auto.
 generalize H2; case q1; case r1; simpl in |- *; auto.
-intros r2 q2; CaseEq ((xI r2 ?= q)%positive Datatypes.Eq); simpl in |- *;
- auto.
+intros r2 q2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xI r2) q Datatypes.Eq); simpl in |- *; auto.
 intros; apply lt_O_nat_of_P; auto.
 intros H H0; apply nat_of_P_lt_Lt_compare_morphism; auto.
 intros H3 H7; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
@@ -346,7 +348,8 @@ intros H3 H7; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
 intros r2 HH; case q; simpl in |- *; auto.
 intros p2; case p2; unfold nat_of_P in |- *; simpl in |- *; auto with arith.
 intros p2; case p2; unfold nat_of_P in |- *; simpl in |- *; auto with arith.
-intros r2 HH; CaseEq ((xI r2 ?= q)%positive Datatypes.Eq); simpl in |- *.
+intros r2 HH. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xI r2) q Datatypes.Eq); simpl in |- *.
 intros; apply lt_O_nat_of_P; auto.
 intros H3; apply nat_of_P_lt_Lt_compare_morphism; auto.
 intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
@@ -364,8 +367,8 @@ intros p'; simpl in |- *; case (Pdiv p' q); simpl in |- *;
  intros q1 r1 (H1, H2); split.
 unfold nat_of_P in |- *; simpl in |- *; rewrite ZL6; rewrite H1.
 case q1; case r1; simpl in |- *; auto.
-intros r2 q2; CaseEq ((xO r2 ?= q)%positive Datatypes.Eq); simpl in |- *;
- auto.
+intros r2 q2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xO r2) q Datatypes.Eq); simpl in |- *; auto.
 intros H3; rewrite <- (Pcompare_Eq_eq _ _ H3); simpl in |- *;
  unfold nat_of_P in |- *; simpl in |- *; repeat rewrite ZL6;
  unfold nat_of_P in |- *; ring.
@@ -380,7 +383,8 @@ intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
  | unfold nat_of_P in |- * ]; ring.
 intros H3; unfold nat_of_P in |- *; simpl in |- *; repeat rewrite ZL6;
  unfold nat_of_P in |- *; ring.
-intros r2; CaseEq ((xO r2 ?= q)%positive Datatypes.Eq); simpl in |- *; auto.
+intros r2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xO r2) q Datatypes.Eq); simpl in |- *; auto.
 intros H3; rewrite <- (Pcompare_Eq_eq _ _ H3); simpl in |- *;
  unfold nat_of_P in |- *; simpl in |- *; repeat rewrite ZL6;
  unfold nat_of_P in |- *; ring.
@@ -393,8 +397,8 @@ intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
     simpl in |- *; repeat rewrite ZL6; unfold nat_of_P in |- *
  | unfold nat_of_P in |- * ]; ring.
 generalize H2; case q1; case r1; simpl in |- *.
-intros r2 q2; CaseEq ((xO r2 ?= q)%positive Datatypes.Eq); simpl in |- *;
- auto.
+intros r2 q2. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xO r2) q Datatypes.Eq); simpl in |- *; auto.
 intros; apply lt_O_nat_of_P; auto.
 intros H H0; apply nat_of_P_lt_Lt_compare_morphism; auto.
 intros H3 H7; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
@@ -406,7 +410,8 @@ intros H3 H7; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
  apply lt_trans with (Pmult_nat r2 1 + Pmult_nat q 1); 
  auto with arith.
 intros; apply lt_O_nat_of_P; auto.
-intros r2 HH; CaseEq ((xO r2 ?= q)%positive Datatypes.Eq); simpl in |- *.
+intros r2 HH. rewrite Z.pos_sub_spec; unfold Pos.compare.
+CaseEq (Pcompare (xO r2) q Datatypes.Eq); simpl in |- *.
 intros; apply lt_O_nat_of_P; auto.
 intros H3; apply nat_of_P_lt_Lt_compare_morphism; auto.
 intros H3; case (Pminus_mask_Gt _ _ H3); intros h (H4, (H5, H6));
