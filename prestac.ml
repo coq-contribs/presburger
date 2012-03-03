@@ -8,6 +8,7 @@
 
 open Pp;;
 open Util;;
+open Errors;;
 open Term;;
 open Names;;
 open Reduction;;
