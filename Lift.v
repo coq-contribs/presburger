@@ -237,7 +237,7 @@ Theorem iso_lift_i1 :
  prenex f2 ->
  forall (n m : nat) (l1 l2 l3 : list Z),
  iso_list3 n m l1 l2 l3 ->
- (form2Prop l1 f1 -> form2Prop l2 f2 <-> form2Prop l3 (lift_if1 n m f1 f2)).
+ ((form2Prop l1 f1 -> form2Prop l2 f2) <-> form2Prop l3 (lift_if1 n m f1 f2)).
 intros f1 f2 H H0; elim H0.
 simpl in |- *; intros a H1 H2 n m l1 l2 l3 H3; split.
 intros H4.
@@ -283,7 +283,7 @@ Theorem iso_lift_i2 :
  prenex f2 ->
  forall (n : nat) (l1 l2 l3 : list Z),
  iso_list3 n 0 l1 l2 l3 ->
- (form2Prop l1 f1 -> form2Prop l2 f2 <-> form2Prop l3 (lift_if2 n f1 f2)).
+ ((form2Prop l1 f1 -> form2Prop l2 f2) <-> form2Prop l3 (lift_if2 n f1 f2)).
 intros f1 f2 H H1; elim H; clear H; simpl in |- *; auto.
 intros a H H0 n l1 l2 l3 H2; split.
 intros H3 x.
@@ -316,7 +316,7 @@ Theorem correct_lift_if :
  prenex f1 ->
  prenex f2 ->
  forall l : list Z,
- form2Prop l f1 -> form2Prop l f2 <-> form2Prop l (lift_if f1 f2).
+ (form2Prop l f1 -> form2Prop l f2) <-> form2Prop l (lift_if f1 f2).
 intros f1 f2 H H0 l; unfold lift_if in |- *; apply iso_lift_i2; auto.
 red in |- *; repeat split; (repeat rewrite (plus_comm p); simpl in |- *);
  auto.
