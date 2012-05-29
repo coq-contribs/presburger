@@ -13,7 +13,7 @@ ReduceCong.v
 ReduceEq.v
 Sort.v
 Zdivides.v
-prestac.ml
+prestac.ml4
 sTactic.v
--custom "$(COQC) $(COQLIBS) -q -byte PresTac.v" "prestac.cmo" PresTac.vo
--custom "$(COQC) $(COQLIBS) -q -byte PresTac_ex.v" "PresTac.vo" PresTac_ex.vo
+PresTac.v
+PresTac_ex.v
