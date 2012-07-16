@@ -20,6 +20,9 @@
 (*                                                                      *)
 (*    Laurent.Thery @sophia.inria.fr        March 2002                  *)
 (************************************************************************)
+
+Global Set Asymmetric Patterns.
+
 (** Some simple tactics *)
 
 Theorem Contradict1 : forall a b : Prop, b -> (a -> ~ b) -> ~ a.
