@@ -78,8 +78,8 @@ let pres_constant dir s =
   with _ ->
   try
     global_reference_in_absolute_module  (make_dirpath (List.map id_of_string dir)) id
-  with _ ->     anomaly ("cannot find "^
-	     (string_of_qualid (make_qualid  (make_dirpath (List.map id_of_string dir)) id)))
+  with _ ->     anomaly (Pp.str ("cannot find "^
+	     (string_of_qualid (make_qualid  (make_dirpath (List.map id_of_string dir)) id))))
 
 (* From Form *)
 
