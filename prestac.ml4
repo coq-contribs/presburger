@@ -197,5 +197,5 @@ let prest_run gl =
                |])) gl
 
 TACTIC EXTEND prestac
- [ "prestac" ] -> [ prest_run ]
+ [ "prestac" ] -> [ Proofview.V82.tactic prest_run ]
 END
