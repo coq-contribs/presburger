@@ -23,7 +23,6 @@ open Closure;;
 open Tacred;;
 open Tactics;;
 open Pattern ;;
-open Hiddentac;;
 open Termops;;
 open Constrintern;;
 
