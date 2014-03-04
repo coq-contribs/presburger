@@ -114,20 +114,20 @@ let isDependent t = dependent (mkRel 1) t
 *)
 
 let rec pos2Num p =   match (kind_of_term p) with
-    | App (c,[|t |]) when c=(Lazy.force coq_xo) ->
+    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_xo) ->
         2* (pos2Num t)
-    | App (c,[|t |]) when c=(Lazy.force coq_xi) ->
+    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_xi) ->
         2* (pos2Num t)+1
-    | Construct _ when p=(Lazy.force coq_xh) ->
+    | Construct _ when Constr.equal p (Lazy.force coq_xh) ->
         1
     | a -> raise Not_a_Form
 
 let rec findId c l =  match l with
-    | (d::l1) -> if (c=d) then 0 else (findId c l1)+1
+    | (d::l1) -> if (Id.equal c d) then 0 else (findId c l1)+1
     | a -> raise Not_a_Form
 
 let  isZ p  = match (kind_of_type p) with
-    | AtomicType (c,[||]) when c=(Lazy.force coq_z) -> true
+    | AtomicType (c,[||]) when Constr.equal c (Lazy.force coq_z) -> true
     | a -> raise Not_a_Form
 
 let rec convertNum n =
@@ -142,36 +142,36 @@ let rec convertExists l p =   match (kind_of_term p) with
 and
    convert l p =   match (kind_of_term p) with
 (* And *)
-    | App (c,[|t1; t2|]) when c=(Lazy.force coq_and) ->
+    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_and) ->
         mkApp ((Lazy.force coq_AND), [| convert l t1; convert l t2 |])
 (* Or *)
-    | App (c,[|t1; t2|]) when c=(Lazy.force coq_or) ->
+    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_or) ->
         mkApp ((Lazy.force coq_OR), [| convert l t1; convert l t2 |])
 (* Forall *)
-    | Prod (Names.Name c,t1,t2) when t1= (Lazy.force coq_z) ->
+    | Prod (Names.Name c,t1,t2) when Constr.equal t1 (Lazy.force coq_z) ->
         mkApp ((Lazy.force coq_FORALL), [| convert (c::l) t2 |])
 (* Impl *)
-    | Prod (c,t1,t2) when c=Names.Anonymous ->
+    | Prod (c,t1,t2) when Name.equal c Names.Anonymous ->
         mkApp ((Lazy.force coq_IMPL), [| convert l t1; convert l t2 |])
     | Prod (c,t1,t2) when not(dependent (mkRel 1) t2) ->
         mkApp ((Lazy.force coq_IMPL), [| convert l t1; convert l t2 |])
 (* Not *)
-    | App (c,[|t|]) when c=(Lazy.force coq_not) ->
+    | App (c,[|t|]) when Constr.equal c (Lazy.force coq_not) ->
         mkApp ((Lazy.force coq_NEG), [| convert l t |])
 (* Exists *)
-    | App (c,[|_; t |]) when c=(Lazy.force coq_ex) ->
+    | App (c,[|_; t |]) when Constr.equal c (Lazy.force coq_ex) ->
         mkApp ((Lazy.force coq_EXISTS), [| convertExists l t |])
 (* Eq *)
-    | App (c,[|t; t1; t2|]) when c=(Lazy.force coq_eq) ->
+    | App (c,[|t; t1; t2|]) when Constr.equal c (Lazy.force coq_eq) ->
         mkApp ((Lazy.force coq_EQ), [| convert l t1; convert l t2 |])
 (* Plus *)
-    | App (c,[|t1; t2|]) when c=(Lazy.force coq_zplus) ->
+    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_zplus) ->
         mkApp ((Lazy.force coq_PLUS), [| convert l t1; convert l t2 |])
 (* Num *)
-    | App (c,[|t |]) when c=(Lazy.force coq_pos) ->
+    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_pos) ->
         mkApp ((Lazy.force coq_NUM), [| convertNum (pos2Num t) |])
 (* Zero *)
-    | Construct _ when p=(Lazy.force coq_zero) ->
+    | Construct _ when Constr.equal p (Lazy.force coq_zero) ->
         mkApp ((Lazy.force coq_NUM), [| convertNum 0 |])
 (* Var *)
     | (Rel  c) ->
