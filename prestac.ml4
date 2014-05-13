@@ -26,6 +26,8 @@ open Pattern ;;
 open Termops;;
 open Constrintern;;
 
+DECLARE PLUGIN "prestac"
+
 (*i*)
 
 (* First, we need to access some Coq constants
