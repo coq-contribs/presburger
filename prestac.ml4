@@ -191,11 +191,12 @@ let prest_run gl =
   let concl = pf_concl gl in
 (* We get the expression and the hastable *)
   let res = convert [] concl in
-       exact_check (mkApp ((Lazy.force coq_presburger_correct)
+  Proofview.V82.of_tactic
+    (exact_check (mkApp ((Lazy.force coq_presburger_correct)
                ,[| res;
                 mkApp ((Lazy.force coq_fgrounNForm_correct) ,
                    [| res; Lazy.force coq_o |])
-               |])) gl
+               |]))) gl
 
 TACTIC EXTEND prestac
  [ "prestac" ] -> [ Proofview.V82.tactic prest_run ]
