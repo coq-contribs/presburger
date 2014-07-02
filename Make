@@ -1,3 +1,4 @@
+-I .
 -R . Presburger
 Cong.v
 Elim.v
