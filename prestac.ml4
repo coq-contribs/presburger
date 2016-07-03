@@ -8,7 +8,7 @@
 
 open Pp;;
 open Util;;
-open Errors;;
+open CErrors;;
 open Term;;
 open Names;;
 open Reduction;;
@@ -19,7 +19,7 @@ open Equality;;
 open Vernacinterp;;
 open Libnames;;
 open Libobject;;
-open Closure;;
+open CClosure;;
 open Tacred;;
 open Tactics;;
 open Pattern ;;
