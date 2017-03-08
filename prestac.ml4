@@ -6,6 +6,7 @@
 (************************************************************************)
 (* the linking code *)
 
+open Ltac_plugin;;
 open Pp;;
 open Util;;
 open CErrors;;
