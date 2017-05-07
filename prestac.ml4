@@ -11,6 +11,7 @@ open Pp;;
 open Util;;
 open CErrors;;
 open Term;;
+open EConstr;;
 open Names;;
 open Reduction;;
 open Tacmach;;
@@ -36,11 +37,11 @@ DECLARE PLUGIN "prestac"
   the constants are loaded in the environment
 *)
 
-let init_constant = Coqlib.gen_constant_in_modules "PresTac"
-  Coqlib.init_modules
+let init_constant c = EConstr.of_constr (Coqlib.gen_constant_in_modules "PresTac"
+  Coqlib.init_modules c)
 
-let constant = Coqlib.gen_constant_in_modules "PresTac"
-  (Coqlib.init_modules @ Coqlib.zarith_base_modules)
+let constant c = EConstr.of_constr (Coqlib.gen_constant_in_modules "PresTac"
+  (Coqlib.init_modules @ Coqlib.zarith_base_modules) c)
 
 (* From logic *)
 
@@ -76,10 +77,10 @@ let coq_zplus = lazy (constant "Zplus");;
 let pres_constant dir s =
   let id = id_of_string s in
   try
-    global_reference_in_absolute_module  ( make_dirpath (List.map id_of_string ("Presburger":: dir))) id
+    EConstr.of_constr (global_reference_in_absolute_module  ( make_dirpath (List.map id_of_string ("Presburger":: dir))) id)
   with _ ->
   try
-    global_reference_in_absolute_module  (make_dirpath (List.map id_of_string dir)) id
+    EConstr.of_constr (global_reference_in_absolute_module  (make_dirpath (List.map id_of_string dir)) id)
   with _ ->     anomaly (Pp.str ("cannot find "^
 	     (string_of_qualid (make_qualid  (make_dirpath (List.map id_of_string dir)) id))))
 
@@ -109,19 +110,19 @@ let coq_presburger_correct = lazy (pres_constant ["Elim"; "Presburger"] "presbur
 exception Not_a_Form
 
 
-let isDependent t = dependent (mkRel 1) t
+let isDependent sigma t = dependent sigma (mkRel 1) t
 
 (* The conclusion is a propostion, convertConcl returns a pair
       composed of the Expr representing the proposition and
       a hash function containing the interpretation of the variable
 *)
 
-let rec pos2Num p =   match (kind_of_term p) with
-    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_xo) ->
-        2* (pos2Num t)
-    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_xi) ->
-        2* (pos2Num t)+1
-    | Construct _ when Constr.equal p (Lazy.force coq_xh) ->
+let rec pos2Num sigma p =   match (kind sigma p) with
+    | App (c,[|t |]) when EConstr.eq_constr sigma c (Lazy.force coq_xo) ->
+        2* (pos2Num sigma t)
+    | App (c,[|t |]) when EConstr.eq_constr sigma c (Lazy.force coq_xi) ->
+        2* (pos2Num sigma t)+1
+    | Construct _ when EConstr.eq_constr sigma p (Lazy.force coq_xh) ->
         1
     | a -> raise Not_a_Form
 
@@ -129,52 +130,52 @@ let rec findId c l =  match l with
     | (d::l1) -> if (Id.equal c d) then 0 else (findId c l1)+1
     | a -> raise Not_a_Form
 
-let  isZ p  = match (kind_of_type p) with
-    | AtomicType (c,[||]) when Constr.equal c (Lazy.force coq_z) -> true
+let  isZ sigma p  = match (kind_of_type sigma p) with
+    | AtomicType (c,[||]) when EConstr.eq_constr sigma c (Lazy.force coq_z) -> true
     | a -> raise Not_a_Form
 
 let rec convertNum n =
     if n<=0 then Lazy.force coq_o
     else mkApp ((Lazy.force coq_s), [| convertNum (n-1) |])
 
-let rec convertExists l p =   match (kind_of_term p) with
+let rec convertExists sigma l p =   match (kind sigma p) with
 (* Lambda *)
-    | Lambda (Names.Name c,t1,t2)  when (isZ t1)->
-       convert (c::l) t2
+    | Lambda (Names.Name c,t1,t2)  when (isZ sigma t1)->
+       convert sigma (c::l) t2
     | a -> raise Not_a_Form
 and
-   convert l p =   match (kind_of_term p) with
+   convert sigma l p =   match (kind sigma p) with
 (* And *)
-    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_and) ->
-        mkApp ((Lazy.force coq_AND), [| convert l t1; convert l t2 |])
+    | App (c,[|t1; t2|]) when EConstr.eq_constr sigma c (Lazy.force coq_and) ->
+        mkApp ((Lazy.force coq_AND), [| convert sigma l t1; convert sigma l t2 |])
 (* Or *)
-    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_or) ->
-        mkApp ((Lazy.force coq_OR), [| convert l t1; convert l t2 |])
+    | App (c,[|t1; t2|]) when EConstr.eq_constr sigma c (Lazy.force coq_or) ->
+        mkApp ((Lazy.force coq_OR), [| convert sigma l t1; convert sigma l t2 |])
 (* Forall *)
-    | Prod (Names.Name c,t1,t2) when Constr.equal t1 (Lazy.force coq_z) ->
-        mkApp ((Lazy.force coq_FORALL), [| convert (c::l) t2 |])
+    | Prod (Names.Name c,t1,t2) when EConstr.eq_constr sigma t1 (Lazy.force coq_z) ->
+        mkApp ((Lazy.force coq_FORALL), [| convert sigma (c::l) t2 |])
 (* Impl *)
     | Prod (c,t1,t2) when Name.equal c Names.Anonymous ->
-        mkApp ((Lazy.force coq_IMPL), [| convert l t1; convert l t2 |])
-    | Prod (c,t1,t2) when not(dependent (mkRel 1) t2) ->
-        mkApp ((Lazy.force coq_IMPL), [| convert l t1; convert l t2 |])
+        mkApp ((Lazy.force coq_IMPL), [| convert sigma l t1; convert sigma l t2 |])
+    | Prod (c,t1,t2) when not(dependent sigma (mkRel 1) t2) ->
+        mkApp ((Lazy.force coq_IMPL), [| convert sigma l t1; convert sigma l t2 |])
 (* Not *)
-    | App (c,[|t|]) when Constr.equal c (Lazy.force coq_not) ->
-        mkApp ((Lazy.force coq_NEG), [| convert l t |])
+    | App (c,[|t|]) when EConstr.eq_constr sigma c (Lazy.force coq_not) ->
+        mkApp ((Lazy.force coq_NEG), [| convert sigma l t |])
 (* Exists *)
-    | App (c,[|_; t |]) when Constr.equal c (Lazy.force coq_ex) ->
-        mkApp ((Lazy.force coq_EXISTS), [| convertExists l t |])
+    | App (c,[|_; t |]) when EConstr.eq_constr sigma c (Lazy.force coq_ex) ->
+        mkApp ((Lazy.force coq_EXISTS), [| convertExists sigma l t |])
 (* Eq *)
-    | App (c,[|t; t1; t2|]) when Constr.equal c (Lazy.force coq_eq) ->
-        mkApp ((Lazy.force coq_EQ), [| convert l t1; convert l t2 |])
+    | App (c,[|t; t1; t2|]) when EConstr.eq_constr sigma c (Lazy.force coq_eq) ->
+        mkApp ((Lazy.force coq_EQ), [| convert sigma l t1; convert sigma l t2 |])
 (* Plus *)
-    | App (c,[|t1; t2|]) when Constr.equal c (Lazy.force coq_zplus) ->
-        mkApp ((Lazy.force coq_PLUS), [| convert l t1; convert l t2 |])
+    | App (c,[|t1; t2|]) when EConstr.eq_constr sigma c (Lazy.force coq_zplus) ->
+        mkApp ((Lazy.force coq_PLUS), [| convert sigma l t1; convert sigma l t2 |])
 (* Num *)
-    | App (c,[|t |]) when Constr.equal c (Lazy.force coq_pos) ->
-        mkApp ((Lazy.force coq_NUM), [| convertNum (pos2Num t) |])
+    | App (c,[|t |]) when EConstr.eq_constr sigma c (Lazy.force coq_pos) ->
+        mkApp ((Lazy.force coq_NUM), [| convertNum (pos2Num sigma t) |])
 (* Zero *)
-    | Construct _ when Constr.equal p (Lazy.force coq_zero) ->
+    | Construct _ when EConstr.eq_constr sigma p (Lazy.force coq_zero) ->
         mkApp ((Lazy.force coq_NUM), [| convertNum 0 |])
 (* Var *)
     | (Rel  c) ->
@@ -191,7 +192,7 @@ and
 let prest_run gl =
   let concl = pf_concl gl in
 (* We get the expression and the hastable *)
-  let res = convert [] concl in
+  let res = convert (project gl) [] concl in
   Proofview.V82.of_tactic
     (exact_check (mkApp ((Lazy.force coq_presburger_correct)
                ,[| res;
