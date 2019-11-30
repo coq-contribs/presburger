@@ -10,6 +10,7 @@ open Ltac_plugin;;
 open Util;;
 open CErrors;;
 open Term;;
+open Constr;;
 open EConstr;;
 open Names;;
 open Tacmach;;
@@ -27,13 +28,13 @@ DECLARE PLUGIN "prestac"
   the constants are loaded in the environment
 *)
 
-let init_constant c = EConstr.of_constr (Universes.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
+let init_constant c = EConstr.of_constr (UnivGen.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
   Coqlib.init_modules c))
 
-let constant c = EConstr.of_constr (Universes.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
+let constant c = EConstr.of_constr (UnivGen.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
   (Coqlib.init_modules @ Coqlib.zarith_base_modules) c))
 
-let zconstant c = EConstr.of_constr (Universes.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
+let zconstant c = EConstr.of_constr (UnivGen.constr_of_global (Coqlib.gen_reference_in_modules "PresTac"
   [["Coq";"ZArith";"BinInt"]] c))
 
 (* From logic *)
@@ -68,14 +69,14 @@ let coq_zplus = lazy (zconstant "add");;
 
 
 let pres_constant dir s =
-  let id = id_of_string s in
+  let id = Id.of_string s in
   try
-    EConstr.of_constr (Universes.constr_of_global (global_reference_in_absolute_module  ( make_dirpath (List.map id_of_string ("Presburger":: dir))) id))
+    EConstr.of_constr (UnivGen.constr_of_global (global_reference_in_absolute_module  ( DirPath.make (List.map Id.of_string ("Presburger":: dir))) id))
   with _ ->
   try
-    EConstr.of_constr (Universes.constr_of_global (global_reference_in_absolute_module  (make_dirpath (List.map id_of_string dir)) id))
+    EConstr.of_constr (UnivGen.constr_of_global (global_reference_in_absolute_module  (DirPath.make (List.map Id.of_string dir)) id))
   with _ ->     anomaly (Pp.str ("cannot find "^
-	     (string_of_qualid (make_qualid  (make_dirpath (List.map id_of_string dir)) id))))
+	     (string_of_qualid (make_qualid  (DirPath.make (List.map Id.of_string dir)) id))))
 
 (* From Form *)
 

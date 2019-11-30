@@ -32,7 +32,7 @@ Fixpoint maxL (l : list Z) (l1 : list (nat * form)) {struct l1} : Z :=
   match l1 with
   | nil => 0%Z
   | (n1, Neg (Form.Eq a b)) :: l2 =>
-      Zmax (maxL l l2) (Zsucc (exp2Z l a - exp2Z l b))
+      Zmax (maxL l l2) (Z.succ (exp2Z l a - exp2Z l b))
   | _ => 0%Z
   end.
  
@@ -41,7 +41,7 @@ intros l l1; elim l1; simpl in |- *; auto with zarith.
 intros a; case a; simpl in |- *; auto with arith.
 intros n; intros f; case f; simpl in |- *; auto with zarith.
 intros f0; case f0; simpl in |- *; auto with zarith.
-intros; apply Zle_trans with (maxL l l0); auto.
+intros; apply Z.le_trans with (maxL l l0); auto.
 apply Zmax1; auto.
 Qed.
  
@@ -51,23 +51,23 @@ Theorem onlyNeg_correct_aux :
 intros l l1 H; elim H; simpl in |- *; auto.
 intros n a b l0 H0 H1 H2 a0 H3; split; auto.
 2: apply H2.
-2: apply Zle_trans with (2 := H3).
+2: apply Z.le_trans with (2 := H3).
 2: apply Zmax1.
 red in |- *; intros H4;
- absurd (Zmax (maxL l l0) (Zsucc (exp2Z l a - exp2Z l b)) <= a0)%Z; 
+ absurd (Zmax (maxL l l0) (Z.succ (exp2Z l a - exp2Z l b)) <= a0)%Z; 
  auto.
 apply Zlt_not_le.
-replace (Zsucc (a0 * Z_of_nat n + exp2Z l b - exp2Z l b)) with
- (Zsucc (a0 * Z_of_nat n)); [ idtac | unfold Zsucc in |- *; ring ].
-apply Zlt_le_trans with (Zsucc (a0 * Z_of_nat n)).
+replace (Z.succ (a0 * Z_of_nat n + exp2Z l b - exp2Z l b)) with
+ (Z.succ (a0 * Z_of_nat n)); [ idtac | unfold Z.succ in |- *; ring ].
+apply Z.lt_le_trans with (Z.succ (a0 * Z_of_nat n)).
 apply Zle_lt_succ.
 pattern a0 at 1 in |- *; replace a0 with (a0 * Z_of_nat 1)%Z;
  [ idtac | simpl in |- *; ring ].
 apply Zmult_le_compat_l; auto with zarith arith.
 apply Znat.inj_le; auto with arith.
-apply Zle_trans with (maxL l l0).
+apply Z.le_trans with (maxL l l0).
 apply maxPos.
-apply Zle_trans with (2 := H3).
+apply Z.le_trans with (2 := H3).
 apply Zmax1.
 replace (exp2Z l a - exp2Z l b)%Z with (a0 * Z_of_nat n)%Z.
 apply Zmax2.

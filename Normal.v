@@ -214,7 +214,7 @@ replace 0%Z with
  [ apply Zplus_lt_compat_r
  | replace (Zneg p) with (- Zpos p)%Z; [ ring | simpl in |- * ] ];
  auto with zarith arith.
-apply Zlt_le_trans with (1 * Z_of_nat (S (S n)))%Z; auto with zarith arith.
+apply Z.lt_le_trans with (1 * Z_of_nat (S (S n)))%Z; auto with zarith arith.
 change (Z_of_nat x < Z_of_nat (S (S n)))%Z in |- *; apply Znat.inj_lt;
  auto with arith.
 apply Zmult_le_compat_r; auto with zarith arith.
