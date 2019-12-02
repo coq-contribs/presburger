@@ -27,7 +27,7 @@ Require Import sTactic.
 
 (** Useful lemmae *)
 
-Theorem Zabs_absolu : forall z : Z, Zabs z = Z_of_nat (Zabs_nat z).
+Theorem Zabs_absolu : forall z : Z, Z.abs z = Z_of_nat (Z.abs_nat z).
 intros z; case z; simpl in |- *; auto; intros p; apply POS_inject.
 Qed.
  
@@ -86,8 +86,8 @@ Definition fcong (i : nat) (a b : Z) :=
   | S i1 =>
       let ab := (a - b)%Z in
       match (ab - Z_of_nat i * Zquotient ab (Z_of_nat i))%Z with
-      | Zneg p1 => Zabs_nat (Z_of_nat i + Zneg p1)
-      | p => Zabs_nat p
+      | Zneg p1 => Z.abs_nat (Z_of_nat i + Zneg p1)
+      | p => Z.abs_nat p
       end
   end.
  
@@ -116,7 +116,7 @@ apply trans_equal with (b + (a - b))%Z.
 ring.
 pattern (a - b)%Z at 1 in |- *; rewrite H1; ring_simplify;
   eapply Zplus_eq_compat; [reflexivity | simpl; apply POS_inject].
-case (le_or_lt (S n) (Zabs_nat (Zpos p))); intros H4; auto.
+case (le_or_lt (S n) (Z.abs_nat (Zpos p))); intros H4; auto.
 Contradict H3; simpl in |- *.
 apply Zle_not_lt.
 repeat rewrite POS_inject.
@@ -126,23 +126,23 @@ intros p H1 (H2, H3); split; auto.
 exists (Zquotient (a - b) (Z_of_nat (S n)) - 1)%Z.
 apply trans_equal with (b + (a - b))%Z.
 ring.
-replace (Z_of_nat (Zabs_nat (Z_of_nat (S n) + Zneg p))) with
+replace (Z_of_nat (Z.abs_nat (Z_of_nat (S n) + Zneg p))) with
  (Z_of_nat (S n) + Zneg p)%Z.
 pattern (a - b)%Z at 1 in |- *; rewrite H1; ring.
 rewrite <- Zabs_absolu; auto.
-apply sym_equal; apply Zabs_eq.
+apply sym_equal; apply Z.abs_eq.
 change (0 <= Z_of_nat (S n) - Zpos p)%Z in |- *.
 apply Zlt_le_weak; apply Zlt_ZERO_minus.
-rewrite <- (Zabs_eq (Z_of_nat (S n))); auto with zarith arith.
+rewrite <- (Z.abs_eq (Z_of_nat (S n))); auto with zarith arith.
 apply lt_inj.
 rewrite <- Zabs_absolu; auto.
-rewrite Zabs_eq.
+rewrite Z.abs_eq.
 pattern (Z_of_nat (S n)) at 2 in |- *;
  replace (Z_of_nat (S n)) with (Z_of_nat (S n) + 0)%Z; 
  auto with zarith.
 change (0 <= Z_of_nat (S n) - Zpos p)%Z in |- *.
 apply Zlt_le_weak; apply Zlt_ZERO_minus.
-rewrite <- (Zabs_eq (Z_of_nat (S n))); auto with zarith arith.
+rewrite <- (Z.abs_eq (Z_of_nat (S n))); auto with zarith arith.
 Qed.
  
 Theorem neg_cong :
