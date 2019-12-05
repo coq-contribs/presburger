@@ -25,7 +25,6 @@ Require Export Cong.
 Require Export List.
 Require Export ZArith.
 Require Export Bool.
-Require Import ROmega.
 Require Export Classical_Prop.
 Require Import Zdivides.
 Require Import ZArithRing.
